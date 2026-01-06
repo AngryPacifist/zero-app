@@ -8,6 +8,7 @@ import {
     AppState,
     AppStateStatus,
     Alert,
+    Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -128,12 +129,10 @@ export function WelcomeScreen({ onWalletCreated }: WelcomeScreenProps) {
 
                     {/* Logo/Icon area */}
                     <View style={styles.logoContainer}>
-                        <LinearGradient
-                            colors={[COLORS.primary, COLORS.primaryLight]}
-                            style={styles.logoGradient}
-                        >
-                            <Text style={styles.logoText}>{BRANDING.symbol}</Text>
-                        </LinearGradient>
+                        <Image
+                            source={require('../../assets/icon.png')}
+                            style={styles.logoImage}
+                        />
                     </View>
 
                     {/* Title */}
@@ -201,19 +200,6 @@ export function WelcomeScreen({ onWalletCreated }: WelcomeScreenProps) {
                     )}
                 </View>
 
-                {/* Debug Info */}
-                {__DEV__ && (
-                    <View style={styles.debugSection}>
-                        <Text style={styles.debugText}>
-                            Redirect: {redirectUrl}
-                        </Text>
-                        <TouchableOpacity onPress={handleClearData}>
-                            <Text style={styles.clearDataText}>
-                                🗑️ Clear Saved Data (fixes 0x2 errors)
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
 
                 {/* Footer */}
                 <Text style={styles.footer}>
@@ -283,17 +269,10 @@ const styles = StyleSheet.create({
     logoContainer: {
         marginBottom: 24,
     },
-    logoGradient: {
+    logoImage: {
         width: 80,
         height: 80,
         borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    logoText: {
-        fontSize: 40,
-        fontWeight: 'bold',
-        color: COLORS.text,
     },
     title: {
         fontSize: 36,
