@@ -20,6 +20,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { COLORS } from '../config';
 import { formatAddress } from '../utils/solana';
 import { useManualWallet, RootStackParamList } from '../App';
+import { ScreenWrapper } from '../components/ScreenWrapper';
 import { isRetryableError } from '../utils/retryUtils';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -142,124 +143,126 @@ export function TipJarScreen() {
     };
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={styles.backText}>← Back</Text>
-                </TouchableOpacity>
-                <Text style={styles.title}>Tip Jar</Text>
-                <View style={{ width: 60 }} />
-            </View>
-
-            {txSignature ? (
-                // Success state
-                <View style={styles.successContainer}>
-                    <View style={styles.successIcon}>
-                        <Text style={styles.successEmoji}>💝</Text>
-                    </View>
-                    <Text style={styles.successTitle}>Thank you!</Text>
-                    <Text style={styles.successSubtitle}>
-                        Your tip of {selectedAmount} SOL was sent
-                    </Text>
-
-                    <TouchableOpacity style={styles.signatureBox} onPress={copySignature}>
-                        <Text style={styles.signatureLabel}>
-                            {copied ? '✓ Copied!' : 'Transaction (tap to copy)'}
-                        </Text>
-                        <Text style={styles.signature}>{formatAddress(txSignature, 10)}</Text>
+        <ScreenWrapper>
+            <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <Ionicons name="arrow-back" size={24} color={COLORS.text} />
                     </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
-                        <Text style={styles.explorerText}>View on Solana Explorer ↗</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.againButton}
-                        onPress={resetTip}
-                    >
-                        <Text style={styles.againText}>Tip Again</Text>
-                    </TouchableOpacity>
+                    <Text style={styles.title}>Tip Jar</Text>
+                    <View style={styles.headerPlaceholder} />
                 </View>
-            ) : (
-                <>
-                    {/* Creator Card */}
-                    <View style={styles.creatorCard}>
-                        <View style={styles.avatar}>
-                            <Text style={styles.avatarEmoji}>👨‍💻</Text>
+
+                {txSignature ? (
+                    // Success state
+                    <View style={styles.successContainer}>
+                        <View style={styles.successIcon}>
+                            <Text style={styles.successEmoji}>💝</Text>
                         </View>
-                        <Text style={styles.creatorName}>{CREATOR_NAME}</Text>
-                        <Text style={styles.creatorAddress}>
-                            {formatAddress(CREATOR_ADDRESS, 6)}
+                        <Text style={styles.successTitle}>Thank you!</Text>
+                        <Text style={styles.successSubtitle}>
+                            Your tip of {selectedAmount} SOL was sent
                         </Text>
-                        <Text style={styles.creatorBio}>
-                            Building awesome things on Solana with Lazorkit
-                        </Text>
-                    </View>
 
-                    {/* Tip Amounts */}
-                    <Text style={styles.sectionTitle}>Choose an amount</Text>
-                    <View style={styles.tipGrid}>
-                        {TIP_AMOUNTS.map((tip) => (
-                            <TouchableOpacity
-                                key={tip.amount}
-                                style={[
-                                    styles.tipCard,
-                                    selectedAmount === tip.amount && styles.tipCardActive
-                                ]}
-                                onPress={() => setSelectedAmount(tip.amount)}
-                                activeOpacity={0.7}
-                            >
-                                <Text style={styles.tipEmoji}>{tip.label}</Text>
-                                <Text style={[
-                                    styles.tipAmount,
-                                    selectedAmount === tip.amount && styles.tipAmountActive
-                                ]}>
-                                    {tip.amount} SOL
-                                </Text>
-                                <Text style={styles.tipDescription}>{tip.description}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
+                        <TouchableOpacity style={styles.signatureBox} onPress={copySignature}>
+                            <Text style={styles.signatureLabel}>
+                                {copied ? '✓ Copied!' : 'Transaction (tap to copy)'}
+                            </Text>
+                            <Text style={styles.signature}>{formatAddress(txSignature, 10)}</Text>
+                        </TouchableOpacity>
 
-                    {/* Info */}
-                    <View style={styles.infoBox}>
-                        <Text style={styles.infoText}>
-                            ☕ One tap to tip! Gasless and secure with your passkey.
-                        </Text>
-                    </View>
+                        <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
+                            <Text style={styles.explorerText}>View on Solana Explorer ↗</Text>
+                        </TouchableOpacity>
 
-                    {/* Tip button */}
-                    <TouchableOpacity
-                        style={[
-                            styles.tipButton,
-                            selectedAmount === null && styles.tipButtonDisabled
-                        ]}
-                        onPress={handleTip}
-                        disabled={selectedAmount === null || isLoading}
-                    >
-                        <LinearGradient
-                            colors={selectedAmount !== null
-                                ? [COLORS.accent, '#16a34a']
-                                : [COLORS.backgroundCard, COLORS.backgroundCard]
-                            }
-                            style={styles.tipButtonGradient}
+                        <TouchableOpacity
+                            style={styles.againButton}
+                            onPress={resetTip}
                         >
-                            {isLoading ? (
-                                <ActivityIndicator color={COLORS.text} />
-                            ) : (
-                                <Text style={styles.tipButtonText}>
-                                    {selectedAmount !== null
-                                        ? `Send ${selectedAmount} SOL Tip`
-                                        : 'Select an amount'
-                                    }
-                                </Text>
-                            )}
-                        </LinearGradient>
-                    </TouchableOpacity>
-                </>
-            )}
-        </ScrollView>
+                            <Text style={styles.againText}>Tip Again</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <>
+                        {/* Creator Card */}
+                        <View style={styles.creatorCard}>
+                            <View style={styles.avatar}>
+                                <Text style={styles.avatarEmoji}>👨‍💻</Text>
+                            </View>
+                            <Text style={styles.creatorName}>{CREATOR_NAME}</Text>
+                            <Text style={styles.creatorAddress}>
+                                {formatAddress(CREATOR_ADDRESS, 6)}
+                            </Text>
+                            <Text style={styles.creatorBio}>
+                                Building awesome things on Solana with Lazorkit
+                            </Text>
+                        </View>
+
+                        {/* Tip Amounts */}
+                        <Text style={styles.sectionTitle}>Choose an amount</Text>
+                        <View style={styles.tipGrid}>
+                            {TIP_AMOUNTS.map((tip) => (
+                                <TouchableOpacity
+                                    key={tip.amount}
+                                    style={[
+                                        styles.tipCard,
+                                        selectedAmount === tip.amount && styles.tipCardActive
+                                    ]}
+                                    onPress={() => setSelectedAmount(tip.amount)}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={styles.tipEmoji}>{tip.label}</Text>
+                                    <Text style={[
+                                        styles.tipAmount,
+                                        selectedAmount === tip.amount && styles.tipAmountActive
+                                    ]}>
+                                        {tip.amount} SOL
+                                    </Text>
+                                    <Text style={styles.tipDescription}>{tip.description}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+
+                        {/* Info */}
+                        <View style={styles.infoBox}>
+                            <Text style={styles.infoText}>
+                                ☕ One tap to tip! Gasless and secure with your passkey.
+                            </Text>
+                        </View>
+
+                        {/* Tip button */}
+                        <TouchableOpacity
+                            style={[
+                                styles.tipButton,
+                                selectedAmount === null && styles.tipButtonDisabled
+                            ]}
+                            onPress={handleTip}
+                            disabled={selectedAmount === null || isLoading}
+                        >
+                            <LinearGradient
+                                colors={selectedAmount !== null
+                                    ? [COLORS.accent, '#16a34a']
+                                    : [COLORS.backgroundCard, COLORS.backgroundCard]
+                                }
+                                style={styles.tipButtonGradient}
+                            >
+                                {isLoading ? (
+                                    <ActivityIndicator color={COLORS.text} />
+                                ) : (
+                                    <Text style={styles.tipButtonText}>
+                                        {selectedAmount !== null
+                                            ? `Send ${selectedAmount} SOL Tip`
+                                            : 'Select an amount'
+                                        }
+                                    </Text>
+                                )}
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    </>
+                )}
+            </ScrollView>
+        </ScreenWrapper>
     );
 }
 
@@ -290,6 +293,9 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: COLORS.text,
     },
+    headerPlaceholder: {
+        width: 40,
+    },
     creatorCard: {
         backgroundColor: COLORS.backgroundCard,
         borderRadius: 20,
@@ -297,7 +303,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 32,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.glassBorder,
     },
     avatar: {
         width: 80,

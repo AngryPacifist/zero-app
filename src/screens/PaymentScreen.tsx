@@ -21,6 +21,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { COLORS } from '../config';
 import { formatAddress } from '../utils/solana';
 import { useManualWallet, RootStackParamList } from '../App';
+import { ScreenWrapper } from '../components/ScreenWrapper';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -107,154 +108,156 @@ export function PaymentScreen() {
     };
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={styles.backText}>← Back</Text>
-                </TouchableOpacity>
-                <Text style={styles.title}>Pay with Solana</Text>
-                <View style={{ width: 60 }} />
-            </View>
+        <ScreenWrapper>
+            <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>Payment</Text>
+                    <View style={styles.headerPlaceholder} />
+                </View>
 
-            {status === 'success' ? (
-                // Success state
-                <View style={styles.successContainer}>
-                    <View style={styles.successIcon}>
-                        <Text style={styles.successEmoji}>🎉</Text>
-                    </View>
-                    <Text style={styles.successTitle}>Payment Complete!</Text>
-                    <Text style={styles.successSubtitle}>
-                        Thank you for your purchase
-                    </Text>
+                {status === 'success' ? (
+                    // Success state
+                    <View style={styles.successContainer}>
+                        <View style={styles.successIcon}>
+                            <Text style={styles.successEmoji}>🎉</Text>
+                        </View>
+                        <Text style={styles.successTitle}>Payment Complete!</Text>
+                        <Text style={styles.successSubtitle}>
+                            Thank you for your purchase
+                        </Text>
 
-                    <View style={styles.receiptCard}>
-                        <View style={styles.receiptRow}>
-                            <Text style={styles.receiptLabel}>Item</Text>
-                            <Text style={styles.receiptValue}>{DEMO_PRODUCT.name}</Text>
+                        <View style={styles.receiptCard}>
+                            <View style={styles.receiptRow}>
+                                <Text style={styles.receiptLabel}>Item</Text>
+                                <Text style={styles.receiptValue}>{DEMO_PRODUCT.name}</Text>
+                            </View>
+                            <View style={styles.receiptRow}>
+                                <Text style={styles.receiptLabel}>Amount</Text>
+                                <Text style={styles.receiptValue}>{DEMO_PRODUCT.price} SOL</Text>
+                            </View>
+                            <View style={styles.receiptRow}>
+                                <Text style={styles.receiptLabel}>Merchant</Text>
+                                <Text style={styles.receiptValue}>{DEMO_PRODUCT.merchantName}</Text>
+                            </View>
+                            <View style={styles.receiptDivider} />
+                            <TouchableOpacity style={styles.receiptRow} onPress={copySignature}>
+                                <Text style={styles.receiptLabel}>
+                                    {copied ? '✓ Copied!' : 'Transaction (tap)'}
+                                </Text>
+                                <Text style={[styles.receiptValue, styles.mono]}>
+                                    {formatAddress(txSignature || '', 8)}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
-                        <View style={styles.receiptRow}>
-                            <Text style={styles.receiptLabel}>Amount</Text>
-                            <Text style={styles.receiptValue}>{DEMO_PRODUCT.price} SOL</Text>
-                        </View>
-                        <View style={styles.receiptRow}>
-                            <Text style={styles.receiptLabel}>Merchant</Text>
-                            <Text style={styles.receiptValue}>{DEMO_PRODUCT.merchantName}</Text>
-                        </View>
-                        <View style={styles.receiptDivider} />
-                        <TouchableOpacity style={styles.receiptRow} onPress={copySignature}>
-                            <Text style={styles.receiptLabel}>
-                                {copied ? '✓ Copied!' : 'Transaction (tap)'}
-                            </Text>
-                            <Text style={[styles.receiptValue, styles.mono]}>
-                                {formatAddress(txSignature || '', 8)}
-                            </Text>
+
+                        <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
+                            <Text style={styles.explorerText}>View on Solana Explorer ↗</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={styles.doneButton}
+                            onPress={resetPayment}
+                        >
+                            <Text style={styles.doneText}>Done</Text>
                         </TouchableOpacity>
                     </View>
-
-                    <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
-                        <Text style={styles.explorerText}>View on Solana Explorer ↗</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.doneButton}
-                        onPress={resetPayment}
-                    >
-                        <Text style={styles.doneText}>Done</Text>
-                    </TouchableOpacity>
-                </View>
-            ) : (
-                <>
-                    {/* Product Display */}
-                    <View style={styles.productCard}>
-                        <View style={styles.productImage}>
-                            <LinearGradient
-                                colors={[COLORS.primary, COLORS.primaryDark]}
-                                style={styles.productImageGradient}
-                            >
-                                <Text style={styles.productEmoji}>🎫</Text>
-                            </LinearGradient>
-                        </View>
-                        <Text style={styles.productName}>{DEMO_PRODUCT.name}</Text>
-                        <Text style={styles.productDescription}>{DEMO_PRODUCT.description}</Text>
-
-                        <View style={styles.priceTag}>
-                            <Text style={styles.priceLabel}>Price</Text>
-                            <Text style={styles.priceValue}>{DEMO_PRODUCT.price} SOL</Text>
-                        </View>
-                    </View>
-
-                    {/* Merchant info */}
-                    <View style={styles.merchantInfo}>
-                        <Text style={styles.merchantLabel}>Paying to</Text>
-                        <View style={styles.merchantRow}>
-                            <View style={styles.merchantAvatar}>
-                                <Text>🏪</Text>
-                            </View>
-                            <View>
-                                <Text style={styles.merchantName}>{DEMO_PRODUCT.merchantName}</Text>
-                                <Text style={styles.merchantAddress}>
-                                    {formatAddress(DEMO_PRODUCT.merchant, 6)}
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
-
-                    {/* Payment Widget Demo */}
-                    <View style={styles.widgetContainer}>
-                        <Text style={styles.widgetLabel}>Payment Widget Preview</Text>
-
-                        <View style={styles.widget}>
-                            <View style={styles.widgetHeader}>
-                                <Text style={styles.widgetLogo}>⚡ Solana Pay</Text>
-                            </View>
-
-                            <View style={styles.widgetBody}>
-                                <Text style={styles.widgetAmount}>{DEMO_PRODUCT.price} SOL</Text>
-                                <Text style={styles.widgetMerchant}>
-                                    → {DEMO_PRODUCT.merchantName}
-                                </Text>
-                            </View>
-
-                            <TouchableOpacity
-                                style={styles.payButton}
-                                onPress={handlePayment}
-                                disabled={status === 'processing' || !walletAddress}
-                            >
+                ) : (
+                    <>
+                        {/* Product Display */}
+                        <View style={styles.productCard}>
+                            <View style={styles.productImage}>
                                 <LinearGradient
                                     colors={[COLORS.primary, COLORS.primaryDark]}
-                                    style={styles.payButtonGradient}
-                                    start={{ x: 0, y: 0 }}
-                                    end={{ x: 1, y: 0 }}
+                                    style={styles.productImageGradient}
                                 >
-                                    {status === 'processing' ? (
-                                        <ActivityIndicator color={COLORS.text} />
-                                    ) : (
-                                        <>
-                                            <Text style={styles.payButtonText}>🔐 Pay with Passkey</Text>
-                                        </>
-                                    )}
+                                    <Text style={styles.productEmoji}>🎫</Text>
                                 </LinearGradient>
-                            </TouchableOpacity>
+                            </View>
+                            <Text style={styles.productName}>{DEMO_PRODUCT.name}</Text>
+                            <Text style={styles.productDescription}>{DEMO_PRODUCT.description}</Text>
 
-                            <Text style={styles.widgetFooter}>
-                                Secured by Lazorkit • Gasless
+                            <View style={styles.priceTag}>
+                                <Text style={styles.priceLabel}>Price</Text>
+                                <Text style={styles.priceValue}>{DEMO_PRODUCT.price} SOL</Text>
+                            </View>
+                        </View>
+
+                        {/* Merchant info */}
+                        <View style={styles.merchantInfo}>
+                            <Text style={styles.merchantLabel}>Paying to</Text>
+                            <View style={styles.merchantRow}>
+                                <View style={styles.merchantAvatar}>
+                                    <Text>🏪</Text>
+                                </View>
+                                <View>
+                                    <Text style={styles.merchantName}>{DEMO_PRODUCT.merchantName}</Text>
+                                    <Text style={styles.merchantAddress}>
+                                        {formatAddress(DEMO_PRODUCT.merchant, 6)}
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+
+                        {/* Payment Widget Demo */}
+                        <View style={styles.widgetContainer}>
+                            <Text style={styles.widgetLabel}>Payment Widget Preview</Text>
+
+                            <View style={styles.widget}>
+                                <View style={styles.widgetHeader}>
+                                    <Text style={styles.widgetLogo}>⚡ Solana Pay</Text>
+                                </View>
+
+                                <View style={styles.widgetBody}>
+                                    <Text style={styles.widgetAmount}>{DEMO_PRODUCT.price} SOL</Text>
+                                    <Text style={styles.widgetMerchant}>
+                                        → {DEMO_PRODUCT.merchantName}
+                                    </Text>
+                                </View>
+
+                                <TouchableOpacity
+                                    style={styles.payButton}
+                                    onPress={handlePayment}
+                                    disabled={status === 'processing' || !walletAddress}
+                                >
+                                    <LinearGradient
+                                        colors={[COLORS.primary, COLORS.primaryDark]}
+                                        style={styles.payButtonGradient}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 0 }}
+                                    >
+                                        {status === 'processing' ? (
+                                            <ActivityIndicator color={COLORS.text} />
+                                        ) : (
+                                            <>
+                                                <Text style={styles.payButtonText}>🔐 Pay with Passkey</Text>
+                                            </>
+                                        )}
+                                    </LinearGradient>
+                                </TouchableOpacity>
+
+                                <Text style={styles.widgetFooter}>
+                                    Secured by Lazorkit • Gasless
+                                </Text>
+                            </View>
+                        </View>
+
+                        {/* Info */}
+                        <View style={styles.infoBox}>
+                            <Text style={styles.infoTitle}>How it works</Text>
+                            <Text style={styles.infoText}>
+                                1. Tap "Pay with Passkey"{'\n'}
+                                2. Authenticate with Face ID / Touch ID{'\n'}
+                                3. Transaction sent instantly (no gas fees!)
                             </Text>
                         </View>
-                    </View>
-
-                    {/* Info */}
-                    <View style={styles.infoBox}>
-                        <Text style={styles.infoTitle}>How it works</Text>
-                        <Text style={styles.infoText}>
-                            1. Tap "Pay with Passkey"{'\n'}
-                            2. Authenticate with Face ID / Touch ID{'\n'}
-                            3. Transaction sent instantly (no gas fees!)
-                        </Text>
-                    </View>
-                </>
-            )}
-        </ScrollView>
+                    </>
+                )}
+            </ScrollView>
+        </ScreenWrapper>
     );
 }
 
@@ -285,6 +288,9 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: COLORS.text,
     },
+    headerPlaceholder: {
+        width: 40,
+    },
     productCard: {
         backgroundColor: COLORS.backgroundCard,
         borderRadius: 20,
@@ -292,7 +298,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.glassBorder,
     },
     productImage: {
         marginBottom: 16,

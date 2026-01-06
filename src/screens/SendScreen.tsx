@@ -23,6 +23,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { COLORS } from '../config';
 import { isValidAddress, formatAddress } from '../utils/solana';
 import { useManualWallet, RootStackParamList } from '../App';
+import { ScreenWrapper } from '../components/ScreenWrapper';
 import {
     TokenInfo,
     SOL_TOKEN,
@@ -218,196 +219,198 @@ export function SendScreen() {
     );
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={styles.backText}>← Back</Text>
-                </TouchableOpacity>
-                <Text style={styles.title}>Send Tokens</Text>
-                <View style={{ width: 60 }} />
-            </View>
-
-            {/* Success state */}
-            {txSignature ? (
-                <View style={styles.successContainer}>
-                    <View style={styles.successIcon}>
-                        <Text style={styles.successEmoji}>✅</Text>
-                    </View>
-                    <Text style={styles.successTitle}>Transaction Sent!</Text>
-                    <Text style={styles.successSubtitle}>
-                        Your {selectedToken.symbol} is on its way
-                    </Text>
-
-                    <TouchableOpacity style={styles.signatureBox} onPress={copySignature}>
-                        <Text style={styles.signatureLabel}>
-                            {copied ? '✓ Copied!' : 'Transaction Signature (tap to copy)'}
-                        </Text>
-                        <Text style={styles.signature}>{formatAddress(txSignature, 12)}</Text>
+        <ScreenWrapper>
+            <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <Ionicons name="arrow-back" size={24} color={COLORS.text} />
                     </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
-                        <Text style={styles.explorerText}>
-                            View on Solana Explorer ↗
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.newTxButton} onPress={resetForm}>
-                        <Text style={styles.newTxText}>Send Another</Text>
-                    </TouchableOpacity>
+                    <Text style={styles.title}>Send</Text>
+                    <View style={styles.headerPlaceholder} />
                 </View>
-            ) : (
-                <>
-                    {/* Token Picker */}
-                    <View style={styles.formSection}>
-                        <Text style={styles.label}>Token</Text>
-                        <TouchableOpacity
-                            style={styles.tokenPicker}
-                            onPress={() => setShowTokenPicker(true)}
-                            disabled={isLoadingTokens}
-                        >
-                            {isLoadingTokens ? (
-                                <ActivityIndicator size="small" color={COLORS.primary} />
-                            ) : (
-                                <>
-                                    <View style={styles.tokenPickerLeft}>
-                                        <View style={styles.tokenIcon}>
-                                            <Text style={styles.tokenIconText}>
-                                                {selectedToken.symbol.slice(0, 2)}
-                                            </Text>
-                                        </View>
-                                        <View>
-                                            <Text style={styles.tokenPickerSymbol}>
-                                                {selectedToken.symbol}
-                                            </Text>
-                                            <Text style={styles.tokenPickerBalance}>
-                                                Balance: {formatTokenBalance(selectedToken.balance)}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <Text style={styles.tokenPickerArrow}>▼</Text>
-                                </>
-                            )}
+
+                {/* Success state */}
+                {txSignature ? (
+                    <View style={styles.successContainer}>
+                        <View style={styles.successIcon}>
+                            <Text style={styles.successEmoji}>✅</Text>
+                        </View>
+                        <Text style={styles.successTitle}>Transaction Sent!</Text>
+                        <Text style={styles.successSubtitle}>
+                            Your {selectedToken.symbol} is on its way
+                        </Text>
+
+                        <TouchableOpacity style={styles.signatureBox} onPress={copySignature}>
+                            <Text style={styles.signatureLabel}>
+                                {copied ? '✓ Copied!' : 'Transaction Signature (tap to copy)'}
+                            </Text>
+                            <Text style={styles.signature}>{formatAddress(txSignature, 12)}</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
+                            <Text style={styles.explorerText}>
+                                View on Solana Explorer ↗
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.newTxButton} onPress={resetForm}>
+                            <Text style={styles.newTxText}>Send Another</Text>
                         </TouchableOpacity>
                     </View>
-
-                    {/* Recipient */}
-                    <View style={styles.formSection}>
-                        <Text style={styles.label}>Recipient Address</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter Solana address"
-                            placeholderTextColor={COLORS.textMuted}
-                            value={recipient}
-                            onChangeText={setRecipient}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                        />
-                        {recipient && !isValidAddress(recipient) && (
-                            <Text style={styles.errorText}>Invalid address</Text>
-                        )}
-                    </View>
-
-                    {/* Amount */}
-                    <View style={styles.formSection}>
-                        <Text style={styles.label}>Amount ({selectedToken.symbol})</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="0.00"
-                            placeholderTextColor={COLORS.textMuted}
-                            value={amount}
-                            onChangeText={setAmount}
-                            keyboardType="decimal-pad"
-                        />
-                        {parseFloat(amount) > selectedToken.balance && (
-                            <Text style={styles.errorText}>Insufficient balance</Text>
-                        )}
-                    </View>
-
-                    {/* Quick amounts */}
-                    <View style={styles.quickAmounts}>
-                        {['25%', '50%', '75%', 'MAX'].map((label, index) => {
-                            const percentage = [0.25, 0.5, 0.75, 1][index];
-                            return (
-                                <TouchableOpacity
-                                    key={label}
-                                    style={styles.quickAmount}
-                                    onPress={() => {
-                                        const quickAmount = selectedToken.balance * percentage;
-                                        setAmount(quickAmount.toFixed(selectedToken.decimals > 4 ? 4 : selectedToken.decimals));
-                                    }}
-                                >
-                                    <Text style={styles.quickAmountText}>{label}</Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
-
-                    {/* Info */}
-                    <View style={styles.infoBox}>
-                        <Text style={styles.infoText}>
-                            ⚡ This transaction is gasless. You won't pay any network fees.
-                        </Text>
-                    </View>
-
-                    {/* Send button */}
-                    <TouchableOpacity
-                        style={[styles.sendButton, !isValidForm && styles.sendButtonDisabled]}
-                        onPress={handleSend}
-                        disabled={!isValidForm || isLoading}
-                    >
-                        <LinearGradient
-                            colors={isValidForm ? [COLORS.primary, COLORS.primaryDark] : [COLORS.backgroundCard, COLORS.backgroundCard]}
-                            style={styles.sendButtonGradient}
-                        >
-                            {isLoading ? (
-                                <ActivityIndicator color={COLORS.text} />
-                            ) : (
-                                <Text style={styles.sendButtonText}>
-                                    Send with Passkey
-                                </Text>
-                            )}
-                        </LinearGradient>
-                    </TouchableOpacity>
-
-                    {/* Retry status */}
-                    {retryStatus && (
-                        <Text style={styles.retryStatus}>{retryStatus}</Text>
-                    )}
-                </>
-            )}
-
-            {/* Token Picker Modal */}
-            <Modal
-                visible={showTokenPicker}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={() => setShowTokenPicker(false)}
-            >
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>Select Token</Text>
-                            <TouchableOpacity onPress={() => setShowTokenPicker(false)}>
-                                <Text style={styles.modalClose}>✕</Text>
+                ) : (
+                    <>
+                        {/* Token Picker */}
+                        <View style={styles.formSection}>
+                            <Text style={styles.label}>Token</Text>
+                            <TouchableOpacity
+                                style={styles.tokenPicker}
+                                onPress={() => setShowTokenPicker(true)}
+                                disabled={isLoadingTokens}
+                            >
+                                {isLoadingTokens ? (
+                                    <ActivityIndicator size="small" color={COLORS.primary} />
+                                ) : (
+                                    <>
+                                        <View style={styles.tokenPickerLeft}>
+                                            <View style={styles.tokenIcon}>
+                                                <Text style={styles.tokenIconText}>
+                                                    {selectedToken.symbol.slice(0, 2)}
+                                                </Text>
+                                            </View>
+                                            <View>
+                                                <Text style={styles.tokenPickerSymbol}>
+                                                    {selectedToken.symbol}
+                                                </Text>
+                                                <Text style={styles.tokenPickerBalance}>
+                                                    Balance: {formatTokenBalance(selectedToken.balance)}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <Text style={styles.tokenPickerArrow}>▼</Text>
+                                    </>
+                                )}
                             </TouchableOpacity>
                         </View>
-                        {tokens.length === 0 ? (
-                            <View style={styles.emptyTokens}>
-                                <Text style={styles.emptyTokensText}>No tokens found</Text>
-                            </View>
-                        ) : (
-                            <FlatList
-                                data={tokens}
-                                renderItem={renderTokenItem}
-                                keyExtractor={(item) => item.mint}
-                                style={styles.tokenList}
+
+                        {/* Recipient */}
+                        <View style={styles.formSection}>
+                            <Text style={styles.label}>Recipient Address</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter Solana address"
+                                placeholderTextColor={COLORS.textMuted}
+                                value={recipient}
+                                onChangeText={setRecipient}
+                                autoCapitalize="none"
+                                autoCorrect={false}
                             />
+                            {recipient && !isValidAddress(recipient) && (
+                                <Text style={styles.errorText}>Invalid address</Text>
+                            )}
+                        </View>
+
+                        {/* Amount */}
+                        <View style={styles.formSection}>
+                            <Text style={styles.label}>Amount ({selectedToken.symbol})</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="0.00"
+                                placeholderTextColor={COLORS.textMuted}
+                                value={amount}
+                                onChangeText={setAmount}
+                                keyboardType="decimal-pad"
+                            />
+                            {parseFloat(amount) > selectedToken.balance && (
+                                <Text style={styles.errorText}>Insufficient balance</Text>
+                            )}
+                        </View>
+
+                        {/* Quick amounts */}
+                        <View style={styles.quickAmounts}>
+                            {['25%', '50%', '75%', 'MAX'].map((label, index) => {
+                                const percentage = [0.25, 0.5, 0.75, 1][index];
+                                return (
+                                    <TouchableOpacity
+                                        key={label}
+                                        style={styles.quickAmount}
+                                        onPress={() => {
+                                            const quickAmount = selectedToken.balance * percentage;
+                                            setAmount(quickAmount.toFixed(selectedToken.decimals > 4 ? 4 : selectedToken.decimals));
+                                        }}
+                                    >
+                                        <Text style={styles.quickAmountText}>{label}</Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+
+                        {/* Info */}
+                        <View style={styles.infoBox}>
+                            <Text style={styles.infoText}>
+                                ⚡ This transaction is gasless. You won't pay any network fees.
+                            </Text>
+                        </View>
+
+                        {/* Send button */}
+                        <TouchableOpacity
+                            style={[styles.sendButton, !isValidForm && styles.sendButtonDisabled]}
+                            onPress={handleSend}
+                            disabled={!isValidForm || isLoading}
+                        >
+                            <LinearGradient
+                                colors={isValidForm ? [COLORS.primary, COLORS.primaryDark] : [COLORS.backgroundCard, COLORS.backgroundCard]}
+                                style={styles.sendButtonGradient}
+                            >
+                                {isLoading ? (
+                                    <ActivityIndicator color={COLORS.text} />
+                                ) : (
+                                    <Text style={styles.sendButtonText}>
+                                        Send with Passkey
+                                    </Text>
+                                )}
+                            </LinearGradient>
+                        </TouchableOpacity>
+
+                        {/* Retry status */}
+                        {retryStatus && (
+                            <Text style={styles.retryStatus}>{retryStatus}</Text>
                         )}
+                    </>
+                )}
+
+                {/* Token Picker Modal */}
+                <Modal
+                    visible={showTokenPicker}
+                    animationType="slide"
+                    transparent={true}
+                    onRequestClose={() => setShowTokenPicker(false)}
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalContent}>
+                            <View style={styles.modalHeader}>
+                                <Text style={styles.modalTitle}>Select Token</Text>
+                                <TouchableOpacity onPress={() => setShowTokenPicker(false)}>
+                                    <Text style={styles.modalClose}>✕</Text>
+                                </TouchableOpacity>
+                            </View>
+                            {tokens.length === 0 ? (
+                                <View style={styles.emptyTokens}>
+                                    <Text style={styles.emptyTokensText}>No tokens found</Text>
+                                </View>
+                            ) : (
+                                <FlatList
+                                    data={tokens}
+                                    renderItem={renderTokenItem}
+                                    keyExtractor={(item) => item.mint}
+                                    style={styles.tokenList}
+                                />
+                            )}
+                        </View>
                     </View>
-                </View>
-            </Modal>
-        </ScrollView>
+                </Modal>
+            </ScrollView>
+        </ScreenWrapper>
     );
 }
 
@@ -438,6 +441,9 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: COLORS.text,
     },
+    headerPlaceholder: {
+        width: 40,
+    },
     formSection: {
         marginBottom: 20,
     },
@@ -453,7 +459,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: COLORS.text,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.glassBorder,
     },
     errorText: {
         color: COLORS.error,

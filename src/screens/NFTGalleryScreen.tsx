@@ -21,6 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from '../config';
 import { formatAddress } from '../utils/solana';
 import { useManualWallet, RootStackParamList } from '../App';
+import { ScreenWrapper } from '../components/ScreenWrapper';
 import { buildMintNFTInstructions } from '../utils/nftUtils';
 import { isRetryableError } from '../utils/retryUtils';
 
@@ -197,117 +198,119 @@ export function NFTGalleryScreen() {
     };
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={styles.backText}>← Back</Text>
-                </TouchableOpacity>
-                <Text style={styles.title}>NFT Gallery</Text>
-                <View style={{ width: 60 }} />
-            </View>
-
-            {/* NFT Card */}
-            <View style={styles.nftCard}>
-                <Image
-                    source={{ uri: TINKERER_NFT.image }}
-                    style={styles.nftImage}
-                    resizeMode="cover"
-                />
-                <View style={styles.nftInfo}>
-                    <Text style={styles.nftName}>{TINKERER_NFT.name}</Text>
-                    <Text style={styles.nftDescription}>{TINKERER_NFT.description}</Text>
-
-                    <View style={styles.tagRow}>
-                        <View style={styles.tag}>
-                            <Text style={styles.tagText}>Metaplex Core</Text>
-                        </View>
-                        <View style={styles.tag}>
-                            <Text style={styles.tagText}>Free Mint</Text>
-                        </View>
-                    </View>
+        <ScreenWrapper>
+            <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>NFT Gallery</Text>
+                    <View style={styles.headerPlaceholder} />
                 </View>
 
-                {/* Mint Button or Minted Status */}
-                {hasMinted ? (
-                    <View style={styles.mintedContainer}>
-                        <Text style={styles.mintedText}>✓ Minted!</Text>
-                        <TouchableOpacity onPress={viewAssetOnExplorer}>
-                            <Text style={styles.viewAssetText}>View on Explorer ↗</Text>
+                {/* NFT Card */}
+                <View style={styles.nftCard}>
+                    <Image
+                        source={{ uri: TINKERER_NFT.image }}
+                        style={styles.nftImage}
+                        resizeMode="cover"
+                    />
+                    <View style={styles.nftInfo}>
+                        <Text style={styles.nftName}>{TINKERER_NFT.name}</Text>
+                        <Text style={styles.nftDescription}>{TINKERER_NFT.description}</Text>
+
+                        <View style={styles.tagRow}>
+                            <View style={styles.tag}>
+                                <Text style={styles.tagText}>Metaplex Core</Text>
+                            </View>
+                            <View style={styles.tag}>
+                                <Text style={styles.tagText}>Free Mint</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    {/* Mint Button or Minted Status */}
+                    {hasMinted ? (
+                        <View style={styles.mintedContainer}>
+                            <Text style={styles.mintedText}>✓ Minted!</Text>
+                            <TouchableOpacity onPress={viewAssetOnExplorer}>
+                                <Text style={styles.viewAssetText}>View on Explorer ↗</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <TouchableOpacity
+                            style={[styles.mintButton, isLoading && styles.mintButtonDisabled]}
+                            onPress={handleMint}
+                            disabled={isLoading}
+                        >
+                            <LinearGradient
+                                colors={[COLORS.primary, COLORS.primaryDark]}
+                                style={styles.mintButtonGradient}
+                            >
+                                {isLoading ? (
+                                    <ActivityIndicator color={COLORS.text} />
+                                ) : (
+                                    <Text style={styles.mintButtonText}>Mint with Passkey</Text>
+                                )}
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    )}
+
+                    {retryStatus && (
+                        <Text style={styles.retryStatus}>{retryStatus}</Text>
+                    )}
+                </View>
+
+                {/* Success Transaction Info */}
+                {txSignature && (
+                    <View style={styles.successBox}>
+                        <Text style={styles.successTitle}>🎉 NFT Minted Successfully!</Text>
+
+                        <TouchableOpacity
+                            style={styles.signatureBox}
+                            onPress={() => copyAddress(txSignature)}
+                        >
+                            <Text style={styles.signatureLabel}>
+                                {copied ? '✓ Copied!' : 'Transaction Signature (tap to copy)'}
+                            </Text>
+                            <Text style={styles.signature}>{formatAddress(txSignature, 12)}</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
+                            <Text style={styles.explorerText}>View Transaction ↗</Text>
                         </TouchableOpacity>
                     </View>
-                ) : (
-                    <TouchableOpacity
-                        style={[styles.mintButton, isLoading && styles.mintButtonDisabled]}
-                        onPress={handleMint}
-                        disabled={isLoading}
-                    >
-                        <LinearGradient
-                            colors={[COLORS.primary, COLORS.primaryDark]}
-                            style={styles.mintButtonGradient}
-                        >
-                            {isLoading ? (
-                                <ActivityIndicator color={COLORS.text} />
-                            ) : (
-                                <Text style={styles.mintButtonText}>Mint with Passkey</Text>
-                            )}
-                        </LinearGradient>
-                    </TouchableOpacity>
                 )}
 
-                {retryStatus && (
-                    <Text style={styles.retryStatus}>{retryStatus}</Text>
-                )}
-            </View>
-
-            {/* Success Transaction Info */}
-            {txSignature && (
-                <View style={styles.successBox}>
-                    <Text style={styles.successTitle}>🎉 NFT Minted Successfully!</Text>
-
-                    <TouchableOpacity
-                        style={styles.signatureBox}
-                        onPress={() => copyAddress(txSignature)}
-                    >
-                        <Text style={styles.signatureLabel}>
-                            {copied ? '✓ Copied!' : 'Transaction Signature (tap to copy)'}
-                        </Text>
-                        <Text style={styles.signature}>{formatAddress(txSignature, 12)}</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
-                        <Text style={styles.explorerText}>View Transaction ↗</Text>
-                    </TouchableOpacity>
+                {/* Info */}
+                <View style={styles.infoBox}>
+                    <Text style={styles.infoText}>
+                        ⚡ Minting is gasless! This NFT is minted using Metaplex Core on Solana devnet.
+                    </Text>
                 </View>
-            )}
 
-            {/* Info */}
-            <View style={styles.infoBox}>
-                <Text style={styles.infoText}>
-                    ⚡ Minting is gasless! This NFT is minted using Metaplex Core on Solana devnet.
-                </Text>
-            </View>
-
-            {/* My Collection */}
-            {hasMinted && mintedAssetAddress && (
-                <View style={styles.collectionSection}>
-                    <Text style={styles.sectionTitle}>📦 Your Collection</Text>
-                    <View style={styles.collectionItem}>
-                        <Image
-                            source={{ uri: TINKERER_NFT.image }}
-                            style={styles.collectionImage}
-                        />
-                        <View style={styles.collectionInfo}>
-                            <Text style={styles.collectionName}>{TINKERER_NFT.name}</Text>
-                            <Text style={styles.collectionAddress}>
-                                {formatAddress(mintedAssetAddress, 8)}
-                            </Text>
+                {/* My Collection */}
+                {hasMinted && mintedAssetAddress && (
+                    <View style={styles.collectionSection}>
+                        <Text style={styles.sectionTitle}>📦 Your Collection</Text>
+                        <View style={styles.collectionItem}>
+                            <Image
+                                source={{ uri: TINKERER_NFT.image }}
+                                style={styles.collectionImage}
+                            />
+                            <View style={styles.collectionInfo}>
+                                <Text style={styles.collectionName}>{TINKERER_NFT.name}</Text>
+                                <Text style={styles.collectionAddress}>
+                                    {formatAddress(mintedAssetAddress, 8)}
+                                </Text>
+                            </View>
+                            <Text style={styles.ownedBadge}>Owned</Text>
                         </View>
-                        <Text style={styles.ownedBadge}>Owned</Text>
                     </View>
-                </View>
-            )}
-        </ScrollView>
+                )}
+            </ScrollView>
+        </ScreenWrapper>
     );
 }
 
@@ -338,11 +341,16 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: COLORS.text,
     },
+    headerPlaceholder: {
+        width: 40,
+    },
     nftCard: {
         backgroundColor: COLORS.backgroundCard,
         borderRadius: 20,
         overflow: 'hidden',
         marginBottom: 20,
+        borderWidth: 1,
+        borderColor: COLORS.glassBorder,
     },
     nftImage: {
         width: '100%',

@@ -21,6 +21,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { COLORS } from '../config';
 import { formatAddress } from '../utils/solana';
 import { useManualWallet, RootStackParamList } from '../App';
+import { ScreenWrapper } from '../components/ScreenWrapper';
 import { SolanaPayData } from './QRScanScreen';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -102,144 +103,148 @@ export function QRPaymentScreen() {
     // Success state
     if (txSignature) {
         return (
-            <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-                <View style={styles.header}>
-                    <View style={{ width: 60 }} />
-                    <Text style={styles.title}>Payment Complete</Text>
-                    <View style={{ width: 60 }} />
-                </View>
-
-                <View style={styles.successContainer}>
-                    <View style={styles.successIcon}>
-                        <Text style={styles.successEmoji}>✅</Text>
+            <ScreenWrapper>
+                <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+                    <View style={styles.header}>
+                        <View style={{ width: 60 }} />
+                        <Text style={styles.title}>Payment Complete</Text>
+                        <View style={{ width: 60 }} />
                     </View>
-                    <Text style={styles.successTitle}>Payment Sent!</Text>
-                    <Text style={styles.successSubtitle}>
-                        {amount} SOL sent to {paymentData.label || 'recipient'}
-                    </Text>
 
-                    <TouchableOpacity style={styles.signatureBox} onPress={copySignature}>
-                        <Text style={styles.signatureLabel}>
-                            {copied ? '✓ Copied!' : 'Transaction Signature (tap to copy)'}
+                    <View style={styles.successContainer}>
+                        <View style={styles.successIcon}>
+                            <Text style={styles.successEmoji}>✅</Text>
+                        </View>
+                        <Text style={styles.successTitle}>Payment Sent!</Text>
+                        <Text style={styles.successSubtitle}>
+                            {amount} SOL sent to {paymentData.label || 'recipient'}
                         </Text>
-                        <Text style={styles.signature}>{formatAddress(txSignature, 12)}</Text>
-                    </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
-                        <Text style={styles.explorerText}>View on Solana Explorer ↗</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.signatureBox} onPress={copySignature}>
+                            <Text style={styles.signatureLabel}>
+                                {copied ? '✓ Copied!' : 'Transaction Signature (tap to copy)'}
+                            </Text>
+                            <Text style={styles.signature}>{formatAddress(txSignature, 12)}</Text>
+                        </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.doneButton} onPress={() => navigation.dispatch(
-                        CommonActions.reset({
-                            index: 0,
-                            routes: [{ name: 'Dashboard' }],
-                        })
-                    )}>
-                        <Text style={styles.doneText}>Done</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+                        <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
+                            <Text style={styles.explorerText}>View on Solana Explorer ↗</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.doneButton} onPress={() => navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'Dashboard' }],
+                            })
+                        )}>
+                            <Text style={styles.doneText}>Done</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </ScreenWrapper>
         );
     }
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={styles.backText}>← Back</Text>
-                </TouchableOpacity>
-                <Text style={styles.title}>Confirm Payment</Text>
-                <View style={{ width: 60 }} />
-            </View>
-
-            {/* Payment Details Card */}
-            <View style={styles.detailsCard}>
-                <View style={styles.iconContainer}>
-                    <Text style={styles.icon}>💳</Text>
+        <ScreenWrapper>
+            <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>Confirm Payment</Text>
+                    <View style={styles.headerPlaceholder} />
                 </View>
 
-                {paymentData.label && (
-                    <Text style={styles.merchantName}>{paymentData.label}</Text>
-                )}
-
-                {paymentData.message && (
-                    <Text style={styles.merchantMessage}>{paymentData.message}</Text>
-                )}
-
-                <View style={styles.separator} />
-
-                <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>To</Text>
-                    <Text style={styles.detailValue}>{formatAddress(paymentData.recipient, 8)}</Text>
-                </View>
-
-                {paymentData.memo && (
-                    <View style={styles.detailRow}>
-                        <Text style={styles.detailLabel}>Memo</Text>
-                        <Text style={styles.detailValue}>{paymentData.memo}</Text>
+                {/* Payment Details Card */}
+                <View style={styles.detailsCard}>
+                    <View style={styles.iconContainer}>
+                        <Text style={styles.icon}>💳</Text>
                     </View>
-                )}
-            </View>
 
-            {/* Amount Section */}
-            <View style={styles.amountSection}>
-                <Text style={styles.label}>Amount (SOL)</Text>
-                {isAmountFixed ? (
-                    <View style={styles.amountFixed}>
-                        <Text style={styles.amountFixedText}>{amount}</Text>
-                        <Text style={styles.amountFixedLabel}>SOL</Text>
-                    </View>
-                ) : (
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter amount"
-                        placeholderTextColor={COLORS.textMuted}
-                        value={amount}
-                        onChangeText={setAmount}
-                        keyboardType="decimal-pad"
-                    />
-                )}
-            </View>
-
-            {/* From Wallet */}
-            <View style={styles.fromSection}>
-                <Text style={styles.label}>From</Text>
-                <View style={styles.walletBox}>
-                    <Text style={styles.walletAddress}>
-                        {formatAddress(walletAddress || '', 12)}
-                    </Text>
-                    <Text style={styles.walletLabel}>Your Smart Wallet</Text>
-                </View>
-            </View>
-
-            {/* Info */}
-            <View style={styles.infoBox}>
-                <Text style={styles.infoText}>
-                    ⚡ This transaction is gasless. You won't pay any network fees.
-                </Text>
-            </View>
-
-            {/* Pay Button */}
-            <TouchableOpacity
-                style={[styles.payButton, !isValidAmount && styles.payButtonDisabled]}
-                onPress={handlePay}
-                disabled={!isValidAmount || isLoading}
-            >
-                <LinearGradient
-                    colors={isValidAmount ? [COLORS.primary, COLORS.primaryDark] : [COLORS.backgroundCard, COLORS.backgroundCard]}
-                    style={styles.payButtonGradient}
-                >
-                    {isLoading ? (
-                        <ActivityIndicator color={COLORS.text} />
-                    ) : (
-                        <Text style={styles.payButtonText}>
-                            Pay {amount ? `${amount} SOL` : ''} with Passkey
-                        </Text>
+                    {paymentData.label && (
+                        <Text style={styles.merchantName}>{paymentData.label}</Text>
                     )}
-                </LinearGradient>
-            </TouchableOpacity>
-        </ScrollView>
+
+                    {paymentData.message && (
+                        <Text style={styles.merchantMessage}>{paymentData.message}</Text>
+                    )}
+
+                    <View style={styles.separator} />
+
+                    <View style={styles.detailRow}>
+                        <Text style={styles.detailLabel}>To</Text>
+                        <Text style={styles.detailValue}>{formatAddress(paymentData.recipient, 8)}</Text>
+                    </View>
+
+                    {paymentData.memo && (
+                        <View style={styles.detailRow}>
+                            <Text style={styles.detailLabel}>Memo</Text>
+                            <Text style={styles.detailValue}>{paymentData.memo}</Text>
+                        </View>
+                    )}
+                </View>
+
+                {/* Amount Section */}
+                <View style={styles.amountSection}>
+                    <Text style={styles.label}>Amount (SOL)</Text>
+                    {isAmountFixed ? (
+                        <View style={styles.amountFixed}>
+                            <Text style={styles.amountFixedText}>{amount}</Text>
+                            <Text style={styles.amountFixedLabel}>SOL</Text>
+                        </View>
+                    ) : (
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter amount"
+                            placeholderTextColor={COLORS.textMuted}
+                            value={amount}
+                            onChangeText={setAmount}
+                            keyboardType="decimal-pad"
+                        />
+                    )}
+                </View>
+
+                {/* From Wallet */}
+                <View style={styles.fromSection}>
+                    <Text style={styles.label}>From</Text>
+                    <View style={styles.walletBox}>
+                        <Text style={styles.walletAddress}>
+                            {formatAddress(walletAddress || '', 12)}
+                        </Text>
+                        <Text style={styles.walletLabel}>Your Smart Wallet</Text>
+                    </View>
+                </View>
+
+                {/* Info */}
+                <View style={styles.infoBox}>
+                    <Text style={styles.infoText}>
+                        ⚡ This transaction is gasless. You won't pay any network fees.
+                    </Text>
+                </View>
+
+                {/* Pay Button */}
+                <TouchableOpacity
+                    style={[styles.payButton, !isValidAmount && styles.payButtonDisabled]}
+                    onPress={handlePay}
+                    disabled={!isValidAmount || isLoading}
+                >
+                    <LinearGradient
+                        colors={isValidAmount ? [COLORS.primary, COLORS.primaryDark] : [COLORS.backgroundCard, COLORS.backgroundCard]}
+                        style={styles.payButtonGradient}
+                    >
+                        {isLoading ? (
+                            <ActivityIndicator color={COLORS.text} />
+                        ) : (
+                            <Text style={styles.payButtonText}>
+                                Pay {amount ? `${amount} SOL` : ''} with Passkey
+                            </Text>
+                        )}
+                    </LinearGradient>
+                </TouchableOpacity>
+            </ScrollView>
+        </ScreenWrapper>
     );
 }
 
@@ -269,6 +274,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '600',
         color: COLORS.text,
+    },
+    headerPlaceholder: {
+        width: 40,
     },
     detailsCard: {
         backgroundColor: COLORS.backgroundCard,

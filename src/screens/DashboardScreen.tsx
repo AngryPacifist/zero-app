@@ -29,6 +29,7 @@ export function DashboardScreen() {
     const [balance, setBalance] = useState<number>(0);
     const [refreshing, setRefreshing] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [hideBalance, setHideBalance] = useState(false);
 
     useEffect(() => {
         if (walletAddress) {
@@ -106,8 +107,19 @@ export function DashboardScreen() {
                     >
                         {/* Balance */}
                         <View style={styles.balanceSection}>
-                            <Text style={styles.balanceLabel}>Total Balance</Text>
-                            <Text style={styles.balanceAmount}>{formatSol(balance)} SOL</Text>
+                            <View style={styles.balanceRow}>
+                                <Text style={styles.balanceLabel}>Total Balance</Text>
+                                <TouchableOpacity onPress={() => setHideBalance(!hideBalance)}>
+                                    <Ionicons
+                                        name={hideBalance ? 'eye-off-outline' : 'eye-outline'}
+                                        size={20}
+                                        color={COLORS.textSecondary}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <Text style={styles.balanceAmount}>
+                                {hideBalance ? '••••••' : `${formatSol(balance)} SOL`}
+                            </Text>
                         </View>
 
                         {/* Address */}
@@ -224,6 +236,11 @@ const styles = StyleSheet.create({
     },
     balanceSection: {
         marginBottom: 16,
+    },
+    balanceRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     balanceLabel: {
         fontSize: 14,

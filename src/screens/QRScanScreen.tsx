@@ -8,6 +8,7 @@ import {
     Dimensions,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { COLORS } from '../config';
@@ -154,10 +155,10 @@ export function QRScanScreen() {
             {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={styles.backText}>← Back</Text>
+                    <Ionicons name="arrow-back" size={24} color={COLORS.text} />
                 </TouchableOpacity>
                 <Text style={styles.title}>Scan QR</Text>
-                <View style={{ width: 60 }} />
+                <View style={styles.headerPlaceholder} />
             </View>
 
             {/* Camera */}
@@ -239,6 +240,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '600',
         color: COLORS.text,
+    },
+    headerPlaceholder: {
+        width: 40,
     },
     cameraContainer: {
         flex: 1,

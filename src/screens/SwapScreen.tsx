@@ -21,6 +21,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { COLORS } from '../config';
 import { formatAddress } from '../utils/solana';
 import { useManualWallet, RootStackParamList } from '../App';
+import { ScreenWrapper } from '../components/ScreenWrapper';
 import {
     TOKENS,
     buildSwapInstructions,
@@ -201,156 +202,160 @@ export function SwapScreen() {
     // Success view
     if (txSignature) {
         return (
-            <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-                <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <Text style={styles.backText}>← Back</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.title}>Swap</Text>
-                    <View style={{ width: 60 }} />
-                </View>
+            <ScreenWrapper>
+                <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+                    <View style={styles.header}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                            <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+                        </TouchableOpacity>
+                        <Text style={styles.title}>Swap</Text>
+                        <View style={styles.headerPlaceholder} />
+                    </View>
 
-                <View style={styles.successCard}>
-                    <Text style={styles.successEmoji}>🎉</Text>
-                    <Text style={styles.successTitle}>Swap Complete!</Text>
-                    <Text style={styles.successAmount}>
-                        {amount} {selectedPair.from.symbol} → {quote ? formatTokenAmount(quote.outAmount, selectedPair.to.decimals) : '?'} {selectedPair.to.symbol}
-                    </Text>
-
-                    <TouchableOpacity style={styles.signatureBox} onPress={copySignature}>
-                        <Text style={styles.signatureLabel}>
-                            {copied ? '✓ Copied!' : 'Transaction (tap to copy)'}
+                    <View style={styles.successCard}>
+                        <Text style={styles.successEmoji}>🎉</Text>
+                        <Text style={styles.successTitle}>Swap Complete!</Text>
+                        <Text style={styles.successAmount}>
+                            {amount} {selectedPair.from.symbol} → {quote ? formatTokenAmount(quote.outAmount, selectedPair.to.decimals) : '?'} {selectedPair.to.symbol}
                         </Text>
-                        <Text style={styles.signature}>{formatAddress(txSignature, 10)}</Text>
-                    </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
-                        <Text style={styles.explorerText}>View on Explorer ↗</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.signatureBox} onPress={copySignature}>
+                            <Text style={styles.signatureLabel}>
+                                {copied ? '✓ Copied!' : 'Transaction (tap to copy)'}
+                            </Text>
+                            <Text style={styles.signature}>{formatAddress(txSignature, 10)}</Text>
+                        </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.newSwapButton} onPress={resetSwap}>
-                        <Text style={styles.newSwapText}>New Swap</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+                        <TouchableOpacity style={styles.explorerButton} onPress={openExplorer}>
+                            <Text style={styles.explorerText}>View on Explorer ↗</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.newSwapButton} onPress={resetSwap}>
+                            <Text style={styles.newSwapText}>New Swap</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </ScreenWrapper>
         );
     }
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Text style={styles.backText}>← Back</Text>
-                </TouchableOpacity>
-                <Text style={styles.title}>Swap</Text>
-                <View style={{ width: 60 }} />
-            </View>
+        <ScreenWrapper>
+            <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <Ionicons name="arrow-back" size={24} color={COLORS.text} />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>Swap</Text>
+                    <View style={styles.headerPlaceholder} />
+                </View>
 
-            {/* Swap Card */}
-            <View style={styles.swapCard}>
-                {/* From */}
-                <View style={styles.tokenSection}>
-                    <Text style={styles.sectionLabel}>From</Text>
-                    <View style={styles.tokenRow}>
-                        <View style={styles.tokenInfo}>
-                            <Text style={styles.tokenSymbol}>{selectedPair.from.symbol}</Text>
+                {/* Swap Card */}
+                <View style={styles.swapCard}>
+                    {/* From */}
+                    <View style={styles.tokenSection}>
+                        <Text style={styles.sectionLabel}>From</Text>
+                        <View style={styles.tokenRow}>
+                            <View style={styles.tokenInfo}>
+                                <Text style={styles.tokenSymbol}>{selectedPair.from.symbol}</Text>
+                            </View>
+                            <TextInput
+                                style={styles.amountInput}
+                                placeholder="0.00"
+                                placeholderTextColor={COLORS.textMuted}
+                                value={amount}
+                                onChangeText={setAmount}
+                                keyboardType="decimal-pad"
+                            />
                         </View>
-                        <TextInput
-                            style={styles.amountInput}
-                            placeholder="0.00"
-                            placeholderTextColor={COLORS.textMuted}
-                            value={amount}
-                            onChangeText={setAmount}
-                            keyboardType="decimal-pad"
-                        />
                     </View>
-                </View>
 
-                {/* Arrow */}
-                <View style={styles.arrowContainer}>
-                    <Text style={styles.swapArrow}>↓</Text>
-                </View>
+                    {/* Arrow */}
+                    <View style={styles.arrowContainer}>
+                        <Text style={styles.swapArrow}>↓</Text>
+                    </View>
 
-                {/* To */}
-                <View style={styles.tokenSection}>
-                    <Text style={styles.sectionLabel}>To</Text>
-                    <View style={styles.tokenRow}>
-                        <View style={styles.tokenInfo}>
-                            <Text style={styles.tokenSymbol}>{selectedPair.to.symbol}</Text>
+                    {/* To */}
+                    <View style={styles.tokenSection}>
+                        <Text style={styles.sectionLabel}>To</Text>
+                        <View style={styles.tokenRow}>
+                            <View style={styles.tokenInfo}>
+                                <Text style={styles.tokenSymbol}>{selectedPair.to.symbol}</Text>
+                            </View>
+                            <View style={styles.outputContainer}>
+                                {isLoadingQuote ? (
+                                    <ActivityIndicator size="small" color={COLORS.primary} />
+                                ) : quote ? (
+                                    <Text style={styles.outputAmount}>
+                                        {formatTokenAmount(quote.outAmount, selectedPair.to.decimals)}
+                                    </Text>
+                                ) : (
+                                    <Text style={styles.outputPlaceholder}>-</Text>
+                                )}
+                            </View>
                         </View>
-                        <View style={styles.outputContainer}>
-                            {isLoadingQuote ? (
-                                <ActivityIndicator size="small" color={COLORS.primary} />
-                            ) : quote ? (
-                                <Text style={styles.outputAmount}>
-                                    {formatTokenAmount(quote.outAmount, selectedPair.to.decimals)}
+                    </View>
+
+                    {/* Quote Info */}
+                    {quote && (
+                        <View style={styles.quoteInfo}>
+                            <View style={styles.quoteRow}>
+                                <Text style={styles.quoteLabel}>Price Impact</Text>
+                                <Text style={styles.quoteValue}>
+                                    {parseFloat(quote.priceImpactPct).toFixed(4)}%
                                 </Text>
-                            ) : (
-                                <Text style={styles.outputPlaceholder}>-</Text>
-                            )}
+                            </View>
+                            <View style={styles.quoteRow}>
+                                <Text style={styles.quoteLabel}>Route</Text>
+                                <Text style={styles.quoteValue}>
+                                    {quote.routePlan?.map(r => r.swapInfo.label).join(' → ') || 'Direct'}
+                                </Text>
+                            </View>
                         </View>
-                    </View>
+                    )}
+
+                    {quoteError && (
+                        <Text style={styles.errorText}>{quoteError}</Text>
+                    )}
                 </View>
 
-                {/* Quote Info */}
-                {quote && (
-                    <View style={styles.quoteInfo}>
-                        <View style={styles.quoteRow}>
-                            <Text style={styles.quoteLabel}>Price Impact</Text>
-                            <Text style={styles.quoteValue}>
-                                {parseFloat(quote.priceImpactPct).toFixed(4)}%
-                            </Text>
-                        </View>
-                        <View style={styles.quoteRow}>
-                            <Text style={styles.quoteLabel}>Route</Text>
-                            <Text style={styles.quoteValue}>
-                                {quote.routePlan?.map(r => r.swapInfo.label).join(' → ') || 'Direct'}
-                            </Text>
-                        </View>
-                    </View>
-                )}
-
-                {quoteError && (
-                    <Text style={styles.errorText}>{quoteError}</Text>
-                )}
-            </View>
-
-            {/* Swap Button */}
-            <TouchableOpacity
-                style={[styles.swapButton, !isValidSwap && styles.swapButtonDisabled]}
-                onPress={handleSwap}
-                disabled={!isValidSwap || isSwapping}
-            >
-                <LinearGradient
-                    colors={isValidSwap ? [COLORS.primary, COLORS.primaryDark] : [COLORS.backgroundCard, COLORS.backgroundCard]}
-                    style={styles.swapButtonGradient}
+                {/* Swap Button */}
+                <TouchableOpacity
+                    style={[styles.swapButton, !isValidSwap && styles.swapButtonDisabled]}
+                    onPress={handleSwap}
+                    disabled={!isValidSwap || isSwapping}
                 >
-                    {isSwapping ? (
-                        <ActivityIndicator color={COLORS.text} />
-                    ) : (
-                        <Text style={styles.swapButtonText}>Swap with Passkey</Text>
-                    )}
-                </LinearGradient>
-            </TouchableOpacity>
+                    <LinearGradient
+                        colors={isValidSwap ? [COLORS.primary, COLORS.primaryDark] : [COLORS.backgroundCard, COLORS.backgroundCard]}
+                        style={styles.swapButtonGradient}
+                    >
+                        {isSwapping ? (
+                            <ActivityIndicator color={COLORS.text} />
+                        ) : (
+                            <Text style={styles.swapButtonText}>Swap with Passkey</Text>
+                        )}
+                    </LinearGradient>
+                </TouchableOpacity>
 
-            {retryStatus && (
-                <Text style={styles.retryStatus}>{retryStatus}</Text>
-            )}
+                {retryStatus && (
+                    <Text style={styles.retryStatus}>{retryStatus}</Text>
+                )}
 
-            {/* Info */}
-            <View style={styles.infoBox}>
-                <Text style={styles.infoText}>
-                    ⚡ Swaps powered by Jupiter. This operates on Solana mainnet.
-                </Text>
-            </View>
+                {/* Info */}
+                <View style={styles.infoBox}>
+                    <Text style={styles.infoText}>
+                        ⚡ Swaps powered by Jupiter. This operates on Solana mainnet.
+                    </Text>
+                </View>
 
-            <View style={styles.warningBox}>
-                <Text style={styles.warningText}>
-                    ⚠️ Jupiter swaps require mainnet SOL. Ensure your wallet has sufficient balance.
-                </Text>
-            </View>
-        </ScrollView>
+                <View style={styles.warningBox}>
+                    <Text style={styles.warningText}>
+                        ⚠️ Jupiter swaps require mainnet SOL. Ensure your wallet has sufficient balance.
+                    </Text>
+                </View>
+            </ScrollView>
+        </ScreenWrapper>
     );
 }
 
@@ -381,11 +386,16 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: COLORS.text,
     },
+    headerPlaceholder: {
+        width: 40,
+    },
     swapCard: {
         backgroundColor: COLORS.backgroundCard,
         borderRadius: 20,
         padding: 20,
         marginBottom: 20,
+        borderWidth: 1,
+        borderColor: COLORS.glassBorder,
     },
     tokenSection: {
         marginBottom: 8,

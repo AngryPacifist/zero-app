@@ -4,6 +4,14 @@ import 'react-native-url-polyfill/auto';
 import { Buffer } from 'buffer';
 global.Buffer = global.Buffer || Buffer;
 
+// Enable native screens with proper background
+import { enableScreens } from 'react-native-screens';
+enableScreens(true);
+
+// Set native background color to prevent white flash
+import * as SystemUI from 'expo-system-ui';
+SystemUI.setBackgroundColorAsync('#09090B');
+
 import React, { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
@@ -123,14 +131,33 @@ function AppContent() {
             saveSession,
             clearSession,
         }}>
-            <NavigationContainer>
+            <NavigationContainer
+                theme={{
+                    dark: true,
+                    colors: {
+                        primary: COLORS.primary,
+                        background: COLORS.background,
+                        card: COLORS.backgroundCard,
+                        text: COLORS.text,
+                        border: COLORS.border,
+                        notification: COLORS.primary,
+                    },
+                    fonts: {
+                        regular: { fontFamily: 'System', fontWeight: '400' },
+                        medium: { fontFamily: 'System', fontWeight: '500' },
+                        bold: { fontFamily: 'System', fontWeight: '700' },
+                        heavy: { fontFamily: 'System', fontWeight: '800' },
+                    },
+                }}
+            >
                 <StatusBar style="light" />
                 <Stack.Navigator
                     initialRouteName={initialRoute}
                     screenOptions={{
                         headerShown: false,
                         contentStyle: { backgroundColor: COLORS.background },
-                        animation: 'slide_from_right',
+                        animation: 'none',
+                        navigationBarColor: COLORS.background,
                     }}
                 >
                     <Stack.Screen name="Welcome" component={WelcomeScreen} />

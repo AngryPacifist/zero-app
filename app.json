@@ -22,6 +22,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#09090B"
       },
+      "backgroundColor": "#09090B",
       "package": "com.zero.wallet",
       "intentFilters": [
         {
@@ -56,7 +57,13 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-system-ui",
+        {
+          "backgroundColor": "#09090B"
+        }
+      ]
     ],
     "extra": {
       "eas": {
