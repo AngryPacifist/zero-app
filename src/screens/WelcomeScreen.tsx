@@ -12,20 +12,23 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, CommonActions } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useWallet } from '@lazorkit/wallet-mobile-adapter';
 import * as Linking from 'expo-linking';
 import * as SecureStore from 'expo-secure-store';
 import * as WebBrowser from 'expo-web-browser';
 import { COLORS, BRANDING } from '../config';
+import { useManualWallet, RootStackParamList } from '../App';
 
 const { width } = Dimensions.get('window');
 
-interface WelcomeScreenProps {
-    onWalletCreated: (walletAddress?: string) => void;
-}
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-export function WelcomeScreen({ onWalletCreated }: WelcomeScreenProps) {
+export function WelcomeScreen() {
+    const navigation = useNavigation<NavigationProp>();
     const { connect, wallet } = useWallet();
+    const { saveSession } = useManualWallet();
     const [isConnecting, setIsConnecting] = useState(false);
 
     // Get the proper redirect URL using expo-linking
@@ -36,9 +39,21 @@ export function WelcomeScreen({ onWalletCreated }: WelcomeScreenProps) {
         if (wallet?.smartWallet) {
             console.log('Wallet connected!', wallet.smartWallet);
             setIsConnecting(false);
-            onWalletCreated();
+            handleNavigateToDashboard(wallet.smartWallet);
         }
     }, [wallet]);
+
+    const handleNavigateToDashboard = async (walletAddress?: string) => {
+        if (walletAddress) {
+            await saveSession(walletAddress);
+        }
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'Dashboard' }],
+            })
+        );
+    };
 
     // Reset loading state when app comes back to foreground
     React.useEffect(() => {
@@ -70,7 +85,7 @@ export function WelcomeScreen({ onWalletCreated }: WelcomeScreenProps) {
                 onSuccess: (connectedWallet) => {
                     console.log('Connect success callback:', connectedWallet.smartWallet);
                     setIsConnecting(false);
-                    onWalletCreated(connectedWallet.smartWallet);
+                    handleNavigateToDashboard(connectedWallet.smartWallet);
                 },
                 onFail: (error) => {
                     console.error('Connect failed:', error);

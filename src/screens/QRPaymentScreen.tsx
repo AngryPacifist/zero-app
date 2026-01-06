@@ -10,6 +10,9 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, useRoute, RouteProp, CommonActions } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useWallet } from '@lazorkit/wallet-mobile-adapter';
 import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import * as Linking from 'expo-linking';
@@ -17,16 +20,16 @@ import * as Clipboard from 'expo-clipboard';
 import * as WebBrowser from 'expo-web-browser';
 import { COLORS } from '../config';
 import { formatAddress } from '../utils/solana';
-import { useManualWallet } from '../App';
+import { useManualWallet, RootStackParamList } from '../App';
 import { SolanaPayData } from './QRScanScreen';
 
-interface QRPaymentScreenProps {
-    paymentData: SolanaPayData;
-    onBack: () => void;
-    onComplete: () => void;
-}
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type QRPaymentRouteProp = RouteProp<RootStackParamList, 'QRPayment'>;
 
-export function QRPaymentScreen({ paymentData, onBack, onComplete }: QRPaymentScreenProps) {
+export function QRPaymentScreen() {
+    const navigation = useNavigation<NavigationProp>();
+    const route = useRoute<QRPaymentRouteProp>();
+    const paymentData = route.params.paymentData;
     const { signAndSendTransaction } = useWallet();
     const { smartWallet } = useManualWallet();
     const walletAddress = smartWallet;
@@ -126,7 +129,12 @@ export function QRPaymentScreen({ paymentData, onBack, onComplete }: QRPaymentSc
                         <Text style={styles.explorerText}>View on Solana Explorer ↗</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.doneButton} onPress={onComplete}>
+                    <TouchableOpacity style={styles.doneButton} onPress={() => navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: 'Dashboard' }],
+                        })
+                    )}>
                         <Text style={styles.doneText}>Done</Text>
                     </TouchableOpacity>
                 </View>
@@ -138,7 +146,7 @@ export function QRPaymentScreen({ paymentData, onBack, onComplete }: QRPaymentSc
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={onBack} style={styles.backButton}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Text style={styles.backText}>← Back</Text>
                 </TouchableOpacity>
                 <Text style={styles.title}>Confirm Payment</Text>

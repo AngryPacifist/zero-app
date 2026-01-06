@@ -12,6 +12,9 @@ import {
     FlatList,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useWallet } from '@lazorkit/wallet-mobile-adapter';
 import { SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import * as Linking from 'expo-linking';
@@ -19,7 +22,7 @@ import * as Clipboard from 'expo-clipboard';
 import * as WebBrowser from 'expo-web-browser';
 import { COLORS } from '../config';
 import { isValidAddress, formatAddress } from '../utils/solana';
-import { useManualWallet } from '../App';
+import { useManualWallet, RootStackParamList } from '../App';
 import {
     TokenInfo,
     SOL_TOKEN,
@@ -30,11 +33,10 @@ import {
 } from '../utils/tokenUtils';
 import { isRetryableError } from '../utils/retryUtils';
 
-interface SendScreenProps {
-    onBack: () => void;
-}
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-export function SendScreen({ onBack }: SendScreenProps) {
+export function SendScreen() {
+    const navigation = useNavigation<NavigationProp>();
     const { signAndSendTransaction, wallet } = useWallet();
     const { smartWallet: manualSmartWallet } = useManualWallet();
     const walletAddress = wallet?.smartWallet || manualSmartWallet;
@@ -219,7 +221,7 @@ export function SendScreen({ onBack }: SendScreenProps) {
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={onBack} style={styles.backButton}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Text style={styles.backText}>← Back</Text>
                 </TouchableOpacity>
                 <Text style={styles.title}>Send Tokens</Text>

@@ -10,6 +10,9 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useWallet } from '@lazorkit/wallet-mobile-adapter';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import * as Linking from 'expo-linking';
@@ -17,7 +20,7 @@ import * as Clipboard from 'expo-clipboard';
 import * as WebBrowser from 'expo-web-browser';
 import { COLORS } from '../config';
 import { formatAddress } from '../utils/solana';
-import { useManualWallet } from '../App';
+import { useManualWallet, RootStackParamList } from '../App';
 import {
     TOKENS,
     buildSwapInstructions,
@@ -26,9 +29,7 @@ import {
 } from '../utils/jupiterUtils';
 import { isRetryableError } from '../utils/retryUtils';
 
-interface SwapScreenProps {
-    onBack: () => void;
-}
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 // Swap pairs available
 const SWAP_PAIRS = [
@@ -38,7 +39,8 @@ const SWAP_PAIRS = [
     },
 ];
 
-export function SwapScreen({ onBack }: SwapScreenProps) {
+export function SwapScreen() {
+    const navigation = useNavigation<NavigationProp>();
     const { signAndSendTransaction, wallet } = useWallet();
     const { smartWallet: manualSmartWallet } = useManualWallet();
     const walletAddress = wallet?.smartWallet || manualSmartWallet;
@@ -201,7 +203,7 @@ export function SwapScreen({ onBack }: SwapScreenProps) {
         return (
             <ScrollView style={styles.container} contentContainerStyle={styles.content}>
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={onBack} style={styles.backButton}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Text style={styles.backText}>← Back</Text>
                     </TouchableOpacity>
                     <Text style={styles.title}>Swap</Text>
@@ -238,7 +240,7 @@ export function SwapScreen({ onBack }: SwapScreenProps) {
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={onBack} style={styles.backButton}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Text style={styles.backText}>← Back</Text>
                 </TouchableOpacity>
                 <Text style={styles.title}>Swap</Text>

@@ -8,12 +8,12 @@ import {
     Dimensions,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { COLORS } from '../config';
+import { RootStackParamList } from '../App';
 
-interface QRScanScreenProps {
-    onBack: () => void;
-    onPaymentScanned: (paymentData: SolanaPayData) => void;
-}
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 // Solana Pay URL format: solana:<recipient>?amount=<amount>&label=<label>&message=<message>
 export interface SolanaPayData {
@@ -78,7 +78,8 @@ function parseSolanaPayUrl(url: string): SolanaPayData | null {
     }
 }
 
-export function QRScanScreen({ onBack, onPaymentScanned }: QRScanScreenProps) {
+export function QRScanScreen() {
+    const navigation = useNavigation<NavigationProp>();
     const [permission, requestPermission] = useCameraPermissions();
     const [scanned, setScanned] = useState(false);
 
@@ -99,13 +100,13 @@ export function QRScanScreen({ onBack, onPaymentScanned }: QRScanScreenProps) {
         if (paymentData) {
             setScanned(true);
             console.log('[QR] ✓ Valid Solana Pay URL:', paymentData);
-            onPaymentScanned(paymentData);
+            navigation.navigate('QRPayment', { paymentData });
         } else {
             // Check if it's just a Solana address
             if (data.length >= 32 && data.length <= 44 && /^[1-9A-HJ-NP-Za-km-z]+$/.test(data)) {
                 setScanned(true);
                 console.log('[QR] ✓ Scanned Solana address:', data);
-                onPaymentScanned({ recipient: data });
+                navigation.navigate('QRPayment', { paymentData: { recipient: data } });
             } else {
                 Alert.alert(
                     'Invalid QR Code',
@@ -132,7 +133,7 @@ export function QRScanScreen({ onBack, onPaymentScanned }: QRScanScreenProps) {
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={onBack} style={styles.backButton}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Text style={styles.backText}>← Back</Text>
                     </TouchableOpacity>
                     <Text style={styles.title}>Scan QR</Text>
@@ -152,7 +153,7 @@ export function QRScanScreen({ onBack, onPaymentScanned }: QRScanScreenProps) {
         <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={onBack} style={styles.backButton}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Text style={styles.backText}>← Back</Text>
                 </TouchableOpacity>
                 <Text style={styles.title}>Scan QR</Text>
