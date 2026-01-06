@@ -31,6 +31,13 @@ npx expo start --clear
 
 Scan the QR code with **Expo Go** to run on your device.
 
+## Download
+
+| Platform | Link |
+|----------|------|
+| **Android** | [Download APK](https://expo.dev/artifacts/eas/hKUJAZDsK7pNx9kJWTgW56.apk) |
+| **iOS** | Run via Expo Go (clone & `npx expo start`) |
+
 ## Project Structure
 
 ```
