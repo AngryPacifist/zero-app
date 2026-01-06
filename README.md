@@ -16,6 +16,16 @@ A premium React Native wallet showcasing [Lazorkit SDK](https://docs.lazorkit.co
 | 🔄 Token Swap | Swap via Jupiter |
 | 🎨 NFT Minting | Mint with Metaplex Core |
 
+## Screenshots
+
+| Welcome | Sign In | Dashboard |
+|---------|---------|-----------|
+| ![Welcome](assets/screenshots/1-welcome.png) | ![Sign In](assets/screenshots/2-signin.png) | ![Dashboard](assets/screenshots/3-dashboard.png) |
+
+| Transaction Approval | Passkey Auth | Success |
+|---------------------|--------------|---------|
+| ![Approval](assets/screenshots/4-approval.png) | ![Passkey](assets/screenshots/5-passkey.jpg) | ![Success](assets/screenshots/6-success.png) |
+
 ## Quick Start
 
 ```bash
