@@ -83,4 +83,4 @@ export const CONFIG = {
 
 ## License
 
-MIT
+[MIT](./LICENSE)
