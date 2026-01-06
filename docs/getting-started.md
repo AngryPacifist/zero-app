@@ -29,7 +29,8 @@ The project uses these core packages:
 {
   "@lazorkit/wallet-mobile-adapter": "^1.5.1",
   "@solana/web3.js": "^1.98.0",
-  "@solana/spl-token": "^0.4.13"
+  "@react-navigation/native": "^7.x",
+  "expo-system-ui": "^4.x"
 }
 ```
 

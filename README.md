@@ -7,10 +7,11 @@ A premium React Native wallet showcasing [Lazorkit SDK](https://docs.lazorkit.co
 ## Features
 
 | Feature | Description |
-|---------|-------------|
+|---------|-----------|
 | 🔐 Passkey Auth | Biometric login (Face ID, fingerprint) |
 | ⚡ Zero Gas | Transactions sponsored via Kora paymaster |
 | 💸 Send Tokens | Transfer SOL or SPL tokens |
+| 📥 Receive | QR code display for receiving payments |
 | 📷 QR Payments | Scan Solana Pay QR codes |
 | 🔄 Token Swap | Swap via Jupiter |
 | 🎨 NFT Minting | Mint with Metaplex Core |
@@ -42,15 +43,18 @@ Scan the QR code with **Expo Go** to run on your device.
 
 ```
 src/
-├── App.tsx                 # Main navigation
+├── App.tsx                 # Main navigation (React Navigation)
 ├── config/                 # Colors, endpoints, branding
-├── screens/               # UI screens
+├── components/             # Reusable UI components
+│   └── ScreenWrapper.tsx   # Dark background wrapper
+├── screens/                # UI screens
 │   ├── WelcomeScreen.tsx   # Passkey creation
 │   ├── DashboardScreen.tsx # Feature hub
 │   ├── SendScreen.tsx      # Token transfers
+│   ├── ReceiveScreen.tsx   # QR code display
 │   ├── SwapScreen.tsx      # Jupiter swap
 │   └── ...
-└── utils/                 # Helpers
+└── utils/                  # Helpers
 ```
 
 ## Documentation
@@ -68,8 +72,10 @@ See [docs/](./docs) for detailed tutorials:
 |---------|---------|
 | `@lazorkit/wallet-mobile-adapter` | Passkey wallet SDK |
 | `@solana/web3.js` | Solana core |
+| `@react-navigation/native` | Screen navigation |
 | `expo` | React Native framework |
-| `@expo/vector-icons` | UI icons |
+| `expo-system-ui` | Native dark mode |
+| `react-native-qrcode-svg` | QR code generation |
 
 ## Configuration
 
