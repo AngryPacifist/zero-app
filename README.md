@@ -36,7 +36,7 @@ Scan the QR code with **Expo Go** to run on your device.
 
 | Platform | Link |
 |----------|------|
-| **Android** | [Download APK](https://expo.dev/artifacts/eas/hKUJAZDsK7pNx9kJWTgW56.apk) |
+| **Android** | [Download APK](https://expo.dev/artifacts/eas/s4KarHNPjixncbqsRHDC9J.apk) |
 | **iOS** | Run via Expo Go (clone & `npx expo start`) |
 
 ## Project Structure
