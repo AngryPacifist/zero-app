@@ -14,8 +14,8 @@ Before you begin, ensure you have:
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/lazorkit-react-native-showcase.git
-cd lazorkit-react-native-showcase
+git clone https://github.com/AngryPacifist/zero-app.git
+cd zero-app
 
 # Install dependencies
 npm install

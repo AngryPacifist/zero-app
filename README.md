@@ -19,7 +19,7 @@ A premium React Native wallet showcasing [Lazorkit SDK](https://docs.lazorkit.co
 
 ```bash
 # Clone
-git clone https://github.com/YOUR_USERNAME/zero-app.git
+git clone https://github.com/AngryPacifist/zero-app.git
 cd zero-app
 
 # Install
