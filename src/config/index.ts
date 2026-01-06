@@ -1,4 +1,4 @@
-// App configuration
+// Zero App Configuration
 export const CONFIG = {
     // Solana network
     RPC_URL: 'https://api.devnet.solana.com',
@@ -12,45 +12,57 @@ export const CONFIG = {
     },
 
     // Deep link scheme for passkey callbacks
-    // Note: Use Linking.createURL('callback') for proper URL in components
-    APP_SCHEME: 'lazorkit-demo',
+    APP_SCHEME: 'zero-app',
 
     // Token mints (Devnet)
     TOKENS: {
-        USDC: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU', // Devnet USDC
+        USDC: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU',
     },
 
-    // Demo tip jar recipient (can be changed)
-    TIP_JAR_RECIPIENT: '11111111111111111111111111111111', // Placeholder - update with real address
+    // Demo tip jar recipient
+    TIP_JAR_RECIPIENT: '11111111111111111111111111111111',
 };
 
-// Colors for the app theme
+// Zero color palette - Premium purple with depth
 export const COLORS = {
-    // Primary gradient
-    primary: '#6366f1',
-    primaryLight: '#818cf8',
-    primaryDark: '#4f46e5',
+    // Primary - Vibrant violet
+    primary: '#7C3AED',
+    primaryLight: '#A78BFA',
+    primaryDark: '#5B21B6',
+    primaryGlow: 'rgba(124, 58, 237, 0.3)',
 
-    // Accent
-    accent: '#22c55e',
-    accentLight: '#4ade80',
+    // Accent - Emerald
+    accent: '#10B981',
+    accentLight: '#34D399',
 
-    // Background
-    background: '#0a0a0f',
-    backgroundLight: '#18181b',
-    backgroundCard: '#1f1f28',
+    // Background - Deep dark
+    background: '#09090B',
+    backgroundLight: '#18181B',
+    backgroundCard: '#1C1C1F',
+    backgroundElevated: '#27272A',
 
     // Text
-    text: '#ffffff',
-    textSecondary: '#a1a1aa',
-    textMuted: '#71717a',
+    text: '#FAFAFA',
+    textSecondary: '#A1A1AA',
+    textMuted: '#71717A',
 
     // Status
-    success: '#22c55e',
-    error: '#ef4444',
-    warning: '#f59e0b',
+    success: '#10B981',
+    error: '#EF4444',
+    warning: '#F59E0B',
 
     // Border
-    border: '#27272a',
-    borderLight: '#3f3f46',
+    border: '#27272A',
+    borderLight: '#3F3F46',
+
+    // Glass effect
+    glass: 'rgba(255, 255, 255, 0.05)',
+    glassBorder: 'rgba(255, 255, 255, 0.1)',
+};
+
+// App branding
+export const BRANDING = {
+    name: 'Zero',
+    symbol: 'Ø',
+    tagline: 'Zero gas. Zero seed phrases. Zero friction.',
 };

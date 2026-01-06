@@ -1,36 +1,36 @@
 {
   "expo": {
-    "name": "Lazorkit Showcase",
-    "slug": "lazorkit-expo-showcase",
+    "name": "Zero",
+    "slug": "zero-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "scheme": "lazorkit-demo",
+    "scheme": "zero-app",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0a0a0f"
+      "backgroundColor": "#09090B"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.lazorkit.showcase"
+      "bundleIdentifier": "com.zero.wallet"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#0a0a0f"
+        "backgroundColor": "#09090B"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.lazorkit.showcase",
+      "package": "com.zero.wallet",
       "intentFilters": [
         {
           "action": "VIEW",
           "autoVerify": true,
           "data": [
             {
-              "scheme": "lazorkit-demo"
+              "scheme": "zero-app"
             }
           ],
           "category": [

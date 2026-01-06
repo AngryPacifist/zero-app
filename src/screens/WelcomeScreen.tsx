@@ -10,11 +10,12 @@ import {
     Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useWallet } from '@lazorkit/wallet-mobile-adapter';
 import * as Linking from 'expo-linking';
 import * as SecureStore from 'expo-secure-store';
 import * as WebBrowser from 'expo-web-browser';
-import { COLORS, CONFIG } from '../config';
+import { COLORS, BRANDING } from '../config';
 
 const { width } = Dimensions.get('window');
 
@@ -131,29 +132,29 @@ export function WelcomeScreen({ onWalletCreated }: WelcomeScreenProps) {
                             colors={[COLORS.primary, COLORS.primaryLight]}
                             style={styles.logoGradient}
                         >
-                            <Text style={styles.logoText}>L</Text>
+                            <Text style={styles.logoText}>{BRANDING.symbol}</Text>
                         </LinearGradient>
                     </View>
 
                     {/* Title */}
-                    <Text style={styles.title}>Lazorkit</Text>
-                    <Text style={styles.subtitle}>Showcase</Text>
+                    <Text style={styles.title}>{BRANDING.name}</Text>
+                    <Text style={styles.subtitle}>{BRANDING.tagline}</Text>
                 </View>
 
                 {/* Features */}
                 <View style={styles.featuresSection}>
                     <FeatureItem
-                        icon="🔐"
+                        icon="finger-print-outline"
                         title="Passkey Security"
                         description="Your device is your wallet"
                     />
                     <FeatureItem
-                        icon="⚡"
-                        title="Gasless Transactions"
-                        description="No SOL needed for fees"
+                        icon="flash-outline"
+                        title="Zero Gas Fees"
+                        description="Transactions are sponsored"
                     />
                     <FeatureItem
-                        icon="🚫"
+                        icon="key-outline"
                         title="No Seed Phrases"
                         description="Nothing to lose or forget"
                     />
@@ -224,7 +225,7 @@ export function WelcomeScreen({ onWalletCreated }: WelcomeScreenProps) {
 }
 
 interface FeatureItemProps {
-    icon: string;
+    icon: React.ComponentProps<typeof Ionicons>['name'];
     title: string;
     description: string;
 }
@@ -232,7 +233,9 @@ interface FeatureItemProps {
 function FeatureItem({ icon, title, description }: FeatureItemProps) {
     return (
         <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>{icon}</Text>
+            <View style={styles.featureIconContainer}>
+                <Ionicons name={icon} size={24} color={COLORS.primary} />
+            </View>
             <View style={styles.featureText}>
                 <Text style={styles.featureTitle}>{title}</Text>
                 <Text style={styles.featureDescription}>{description}</Text>
@@ -316,8 +319,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.border,
     },
-    featureIcon: {
-        fontSize: 28,
+    featureIconContainer: {
+        width: 48,
+        height: 48,
+        borderRadius: 12,
+        backgroundColor: COLORS.glass,
+        alignItems: 'center',
+        justifyContent: 'center',
         marginRight: 16,
     },
     featureText: {

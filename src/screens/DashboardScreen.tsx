@@ -8,6 +8,7 @@ import {
     RefreshControl,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { useWallet } from '@lazorkit/wallet-mobile-adapter';
 import { COLORS } from '../config';
@@ -118,7 +119,7 @@ export function DashboardScreen({ onNavigate, onDisconnect }: DashboardScreenPro
                 activeOpacity={0.7}
             >
                 <View style={[styles.featureIcon, { backgroundColor: '#3b82f6' }]}>
-                    <Text style={styles.featureEmoji}>💸</Text>
+                    <Ionicons name="send" size={22} color="#fff" />
                 </View>
                 <View style={styles.featureContent}>
                     <Text style={styles.featureTitle}>Send Tokens</Text>
@@ -135,7 +136,7 @@ export function DashboardScreen({ onNavigate, onDisconnect }: DashboardScreenPro
                 activeOpacity={0.7}
             >
                 <View style={[styles.featureIcon, { backgroundColor: '#22c55e' }]}>
-                    <Text style={styles.featureEmoji}>☕</Text>
+                    <Ionicons name="gift" size={22} color="#fff" />
                 </View>
                 <View style={styles.featureContent}>
                     <Text style={styles.featureTitle}>Tip Jar</Text>
@@ -152,7 +153,7 @@ export function DashboardScreen({ onNavigate, onDisconnect }: DashboardScreenPro
                 activeOpacity={0.7}
             >
                 <View style={[styles.featureIcon, { backgroundColor: '#f59e0b' }]}>
-                    <Text style={styles.featureEmoji}>🛒</Text>
+                    <Ionicons name="cart" size={22} color="#fff" />
                 </View>
                 <View style={styles.featureContent}>
                     <Text style={styles.featureTitle}>Pay with Solana</Text>
@@ -169,7 +170,7 @@ export function DashboardScreen({ onNavigate, onDisconnect }: DashboardScreenPro
                 activeOpacity={0.7}
             >
                 <View style={[styles.featureIcon, { backgroundColor: '#8b5cf6' }]}>
-                    <Text style={styles.featureEmoji}>📷</Text>
+                    <Ionicons name="qr-code" size={22} color="#fff" />
                 </View>
                 <View style={styles.featureContent}>
                     <Text style={styles.featureTitle}>Scan QR to Pay</Text>
@@ -186,7 +187,7 @@ export function DashboardScreen({ onNavigate, onDisconnect }: DashboardScreenPro
                 activeOpacity={0.7}
             >
                 <View style={[styles.featureIcon, { backgroundColor: '#ec4899' }]}>
-                    <Text style={styles.featureEmoji}>🎨</Text>
+                    <Ionicons name="image" size={22} color="#fff" />
                 </View>
                 <View style={styles.featureContent}>
                     <Text style={styles.featureTitle}>NFT Gallery</Text>
@@ -203,7 +204,7 @@ export function DashboardScreen({ onNavigate, onDisconnect }: DashboardScreenPro
                 activeOpacity={0.7}
             >
                 <View style={[styles.featureIcon, { backgroundColor: '#06b6d4' }]}>
-                    <Text style={styles.featureEmoji}>🔄</Text>
+                    <Ionicons name="swap-horizontal" size={22} color="#fff" />
                 </View>
                 <View style={styles.featureContent}>
                     <Text style={styles.featureTitle}>Token Swap</Text>
